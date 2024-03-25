@@ -5,21 +5,18 @@ const fs = require("fs");
 const fsPromises = require("fs").promises;
 const path = require("path");
 
-const logEvents = async (message) => {
+const logEvents = async (message, logName) => {
   const dateTime = `${format(new Date(), "yyyyMMdd\tHH:mm:ss")}`;
   const logItem = `${dateTime}\t${uuid()}\t${message}\n`;
-  console.log(logItem);
-
-  const logsDir = path.join(__dirname, "logs");
-  const logFilePath = path.join(logsDir, "logfile.txt");
 
   try {
-    if (!fs.existsSync(logsDir)) {
-      await fsPromises.mkdir(logsDir);
+    if (!fs.existsSync(path.join(__dirname, "logs"))) {
+      await fsPromises.mkdir(path.join(__dirname, "logs"));
     }
-    await fsPromises.appendFile(logFilePath, logItem);
+
+    await fsPromises.appendFile(path.join(__dirname, "logs", logName), logItem);
   } catch (err) {
-    console.error("An error occurred while writing to the logs:", err);
+    console.log(err);
   }
 };
 
